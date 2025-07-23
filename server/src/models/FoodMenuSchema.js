@@ -15,7 +15,7 @@ const FoodMenuSchema = new Schema({
     required: true,
     min: 0,
   },
-  imageUrl: {
+  image: {
     type: String,
     required: true,
   },
