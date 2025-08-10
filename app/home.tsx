@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
+  Modal,
 } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Svg, { Circle } from "react-native-svg";
@@ -119,6 +120,30 @@ function CircularProgress({
 }
 
 export default function HomeScreen() {
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const todaysMedications = [
+    {
+      id: 1,
+      name: "Paracetamol",
+      dosage: "500mg",
+      color: "#4CAF50",
+      times: ["08:00 AM"],
+    },
+    {
+      id: 2,
+      name: "Amoxicillin",
+      dosage: "250mg",
+      color: "#2196F3",
+      times: ["12:00 PM"],
+    },
+  ];
+
+  const isDoseTaken = (id) => id === 1; // Pretend the first one is taken
+  const handleTakeDose = (med) => {
+    console.log(`Taking dose for ${med.name}`);
+  };
+
   return (
     <ScrollView
       className="flex-1 bg-[#f8f9fa]"
@@ -139,7 +164,7 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               className="relative p-[8px] bg-[#ffffff26] rounded-[12px] ml-[8px]"
-              onPress={() => {}}
+              onPress={() => setShowNotifications(true)}
             >
               <Ionicons name="notifications-outline" size={24} color="white" />
 
@@ -153,7 +178,7 @@ export default function HomeScreen() {
         </View>
       </LinearGradient>
 
-      <View className="flex-1 pt-[12px]">
+      <View className="flex-1 py-[12px]">
         <View className="px-[20px] mb-[2px]">
           <Text className="text-[20px] font-bold text-[#1a1a1a] mb-[3px]">
             Quick Actions
@@ -185,6 +210,138 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
+
+      <View className="px-[20px]">
+        <View className="flex-row justify-between items-center mb-[15px]">
+          <Text className="text-[20px] font-bold text-[#1a1a1a] mb-[5px]">
+            Today&apos;s Schedule
+          </Text>
+          <Link href="/" asChild>
+            <TouchableOpacity>
+              <Text className="text-[#2E7D32] font-semibold">See All</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
+
+        {todaysMedications.length === 0 ? (
+          <View className="items-center p-[30px] bg-white rounded-2xl mt-[10px]">
+            <Ionicons name="medical-outline" size={48} color="#ccc" />
+            <Text className="text-[16px] text-[#666] mt-[10px] mb-[20px]">
+              No medications scheduled for today
+            </Text>
+            <Link href="/" asChild>
+              <TouchableOpacity className="bg-[#1a8e2d] px-[20px] py-[10px] rounded-3xl">
+                <Text className="text-white font-semibold">Add Medication</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
+        ) : (
+          todaysMedications.map((medication) => {
+            const taken = isDoseTaken(medication.id);
+            return (
+              <View
+                key={medication.id}
+                className="flex-row items-center bg-white rounded-2xl p-[16px] mb-[12px]"
+                style={{
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 8,
+                  elevation: 3,
+                }}
+              >
+                <View
+                  className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                  style={{ backgroundColor: `${medication.color}15` }}
+                >
+                  <Ionicons name="medical" size={24} color={medication.color} />
+                </View>
+                <View className="flex-1 justify-between">
+                  <Text className="text-[16px] font-semibold text-[#333] mb-[4px]">
+                    {medication.name}
+                  </Text>
+                  <Text className="text-[14px] text-[#666 mb-[4px]]">
+                    {medication.dosage}
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text className="ml-[5px] text-[#666] text-[14px]">
+                      {medication.times[0]}
+                    </Text>
+                  </View>
+                </View>
+                {taken ? (
+                  <View className="flex-row items-center bg-[#e8f5e9] px-[12px] py-[6px] rounded-xl ml-[10px]">
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={20}
+                      color="#4CAF50"
+                    />
+                    <Text className="text-[#4caf50] font-semibold text-[14px] ml-[4px]">
+                      Taken
+                    </Text>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    className="py-[8px] px-[15px] rounded-2xl ml-[10px]"
+                    style={{ backgroundColor: `${medication.color}` }}
+                    onPress={() => handleTakeDose(medication)}
+                  >
+                    <Text className="text-white font-semibold text-[14px]">
+                      Take
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            );
+          })
+        )}
+      </View>
+
+      <Modal
+        visible={showNotifications}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowNotifications(false)}
+      >
+        <View className="flex-1 bg-[#0000007f] justify-end">
+          <View className="bg-white rounded-tl-3xl rounded-tr-3xl p-[20px] max-h-[80%]">
+            <View className="flex-row justify-between items-center mb-[20px]">
+              <Text className="text-[20px] font-bold text-[#333]">
+                Notifications
+              </Text>
+              <TouchableOpacity
+                className="p-[5px]"
+                onPress={() => setShowNotifications(false)}
+              >
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            {todaysMedications.map((medication) => (
+              <View
+                key={medication.id}
+                className="flex-row p-[15px] rounded-xl bg-[#f5f5f5] mb-[10px]"
+              >
+                <View className="w-[40px] h-[40px] rounded-[20px] bg-[#e8f5e9] justify-center items-center mr-[15px]">
+                  <Ionicons name="medical" size={24} color={medication.color} />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-[16px] font-semibold text-[#333] mb-[4px]">
+                    {medication.name}
+                  </Text>
+                  <Text className="text-[14px] text-[#666] mb-[4px]">
+                    {medication.dosage}
+                  </Text>
+                  <Text className="text-[12px] text-[#999]">
+                    {medication.times[0]}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
