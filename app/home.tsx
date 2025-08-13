@@ -186,7 +186,7 @@ export default function HomeScreen() {
 
           <View className="flex-row flex-wrap gap-[12px] mt-[15px]">
             {QUICK_ACTIONS.map((action) => (
-              <Link href={"/"} key={action.label} asChild>
+              <Link href={"/medications/add"} key={action.label} asChild>
                 <TouchableOpacity
                   style={{ width: (width - 52) / 2 }}
                   className="h-[110px] rounded-2xl overflow-hidden"
@@ -223,13 +223,13 @@ export default function HomeScreen() {
           </Link>
         </View>
 
-        {todaysMedications.length === 0 ? (
+        {todaysMedications.length === 2 ? (
           <View className="items-center p-[30px] bg-white rounded-2xl mt-[10px]">
             <Ionicons name="medical-outline" size={48} color="#ccc" />
             <Text className="text-[16px] text-[#666] mt-[10px] mb-[20px]">
               No medications scheduled for today
             </Text>
-            <Link href="/" asChild>
+            <Link href="/medications/add" asChild>
               <TouchableOpacity className="bg-[#1a8e2d] px-[20px] py-[10px] rounded-3xl">
                 <Text className="text-white font-semibold">Add Medication</Text>
               </TouchableOpacity>
