@@ -28,6 +28,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || "Internal server error" });
 });
 
+app.get("/", (req, res) => res.send("Hello from server"));
+
 const startServer = async () => {
   try {
     await connectDB();
