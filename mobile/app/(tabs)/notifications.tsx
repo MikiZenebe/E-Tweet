@@ -1,10 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-export default function HomeScreen() {
+export default function NotificationScreen() {
   return (
     <View>
-      <Text>Home Screen</Text>
+      <Text>NotificationScreen</Text>
     </View>
   );
 }
